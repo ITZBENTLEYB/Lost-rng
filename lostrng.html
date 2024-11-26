@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LostRNG Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .inventory {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 10px;
+        }
+        .character {
+            margin: 5px;
+            display: inline-block;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .character:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>LostRNG Game</h1>
+
+    <button class="button" id="spinButton">Spin for Character</button>
+    <p id="characterText">No character yet</p>
+
+    <div id="inventory" class="inventory">Inventory: No characters yet</div>
+
+    <div id="battleInfo" class="inventory">Choose a character to fight with</div>
+
+    <button class="button" id="battleButton" disabled>Battle</button>
+    <p id="battleResult">Battle Result</p>
+
+    <script>
+        const characters = [
+    { name: "Yuji Itadori", anime: "Jujutsu Kaisen", power: 80 },
+    { name: "Satoru Gojo", anime: "Jujutsu Kaisen", power: 100 },
+    { name: "Luffy", anime: "One Piece", power: 90 },
+    { name: "Zoro", anime: "One Piece", power: 85 },
+    { name: "Tanjiro Kamado", anime: "Demon Slayer", power: 85 },
+    { name: "Nezuko Kamado", anime: "Demon Slayer", power: 80 },
+    { name: "Saiki Kusuo", anime: "Saiki K", power: 60 },
+    { name: "Gabimaru", anime: "Hell's Paradise", power: 90 },
+    { name: "Naruto Uzumaki", anime: "Naruto", power: 95 },
+    { name: "Ichigo Kurosaki", anime: "Bleach", power: 90 },
+    { name: "Lelouch Lamperouge", anime: "Code Geass", power: 85 },
+    { name: "Eren Yeager", anime: "Attack on Titan", power: 92 },
+    { name: "Kenshin Himura", anime: "Rurouni Kenshin", power: 80 },
+    { name: "Kaguya Shinomiya", anime: "Kaguya-sama: Love is War", power: 75 },
+    { name: "Saitama", anime: "One Punch Man", power: 100 },
+    { name: "Goku", anime: "Dragon Ball Z", power: 110 },
+    { name: "Vegeta", anime: "Dragon Ball Z", power: 95 },
+    { name: "Kuwabara", anime: "Yu Yu Hakusho", power: 80 },
+    { name: "Kurapika", anime: "Hunter x Hunter", power: 88 },
+    { name: "Himura Kenshin", anime: "Rurouni Kenshin", power: 85 },
+    { name: "Natsu Dragneel", anime: "Fairy Tail", power: 90 },
+    { name: "Rem", anime: "Re:Zero", power: 75 },
+    { name: "Emilia", anime: "Re:Zero", power: 70 },
+    { name: "Shoto Todoroki", anime: "My Hero Academia", power: 95 },
+    { name: "Izuku Midoriya", anime: "My Hero Academia", power: 90 },
+    { name: "Bakugo Katsuki", anime: "My Hero Academia", power: 93 },
+    { name: "Kanao Tsuyuri", anime: "Demon Slayer", power: 80 },
+    { name: "Shinobu Kocho", anime: "Demon Slayer", power: 82 },
+    { name: "Roronoa Zoro", anime: "One Piece", power: 92 },
+    { name: "Mugen", anime: "Samurai Champloo", power: 85 },
+    { name: "Rin Okumura", anime: "Blue Exorcist", power: 95 },
+    { name: "Shura Kirigakure", anime: "Blue Exorcist", power: 85 },
+    { name: "Mephisto Pheles", anime: "Blue Exorcist", power: 100 },
+    { name: "Momo Ayase", anime: "Dandadan", power: 80 },
+    { name: "Okarun", anime: "Dandadan", power: 85 },
+    { name: "Taro", anime: "Dandadan", power: 90 },
+    { name: "Vampire King", anime: "Dandadan", power: 95 },
+    { name: "Makunouchi Ippo", anime: "Hajime no Ippo", power: 85 },
+    { name: "Kageyama Tobio", anime: "Haikyuu!!", power: 70 },
+    { name: "Hinata Shoyo", anime: "Haikyuu!!", power: 75 },
+    { name: "Rintarou Okabe", anime: "Steins;Gate", power: 80 },
+    { name: "Katsuki Bakugo", anime: "My Hero Academia", power: 92 },
+    { name: "Ruka Urushibara", anime: "Steins;Gate", power: 65 },
+    { name: "Kirito", anime: "Sword Art Online", power: 90 },
+    { name: "Asuna", anime: "Sword Art Online", power: 88 },
+    { name: "Asta", anime: "Black Clover", power: 85 },
+    { name: "Yuno", anime: "Black Clover", power: 87 },
+    { name: "Yami Sukehiro", anime: "Black Clover", power: 95 },
+    { name: "Kamina", anime: "Gurren Lagann", power: 88 },
+    { name: "Simon", anime: "Gurren Lagann", power: 80 },
+    { name: "Mikasa Ackerman", anime: "Attack on Titan", power: 95 },
+    { name: "Levi Ackerman", anime: "Attack on Titan", power: 100 },
+    { name: "Saber", anime: "Fate/stay night", power: 92 },
+    { name: "Shirou Emiya", anime: "Fate/stay night", power: 80 },
+    { name: "Lancer", anime: "Fate/stay night", power: 85 },
+    { name: "Kuroko Tetsuya", anime: "Kuroko no Basket", power: 78 },
+    { name: "Taiga Aisaka", anime: "Toradora", power: 70 },
+    { name: "Ryuuji Takasu", anime: "Toradora", power: 75 },
+    { name: "Saber Alter", anime: "Fate/stay night", power: 98 },
+    { name: "Zero Two", anime: "Darling in the Franxx", power: 90 },
+    { name: "Ichigo Kurosaki", anime: "Bleach", power: 92 },
+    { name: "Uryuu Ishida", anime: "Bleach", power: 85 },
+    { name: "Orihime Inoue", anime: "Bleach", power: 80 },
+    { name: "Renji Abarai", anime: "Bleach", power: 88 },
+    { name: "Shizune", anime: "Naruto", power: 75 },
+    { name: "Karin Uzumaki", anime: "Naruto", power: 70 },
+    { name: "Konohamaru Sarutobi", anime: "Naruto", power: 78 },
+    { name: "Madara Uchiha", anime: "Naruto", power: 105 },
+    { name: "Obito Uchiha", anime: "Naruto", power: 100 },
+    { name: "Minato Namikaze", anime: "Naruto", power: 98 },
+    { name: "Hashirama Senju", anime: "Naruto", power: 102 },
+    { name: "Tobirama Senju", anime: "Naruto", power: 97 },
+    { name: "Madarame Ikkaku", anime: "Bleach", power: 82 },
+    { name: "Yachiru Kusajishi", anime: "Bleach", power: 88 },
+    { name: "Shunsui Kyoraku", anime: "Bleach", power: 95 },
+    { name: "Byakuya Kuchiki", anime: "Bleach", power: 90 },
+    { name: "Sosuke Aizen", anime: "Bleach", power: 100 }
+    // You can keep adding more characters in the same format
+];
+
+        let playerCharacter = null;
+        let enemyCharacter = null;
+        let inventory = [];
+        let battledEnemies = [];
+        let rolledCharacters = [];
+
+        document.getElementById("spinButton").addEventListener("click", () => {
+            // Roll a random character that hasn't been rolled yet
+            playerCharacter = getRandomCharacter();
+            if (playerCharacter) {
+                inventory.push(playerCharacter);
+                rolledCharacters.push(playerCharacter.name); // Mark character as rolled
+                updateInventory();
+                document.getElementById("characterText").innerText = 
+                    `You got: ${playerCharacter.name} from ${playerCharacter.anime} (Power: ${playerCharacter.power})`;
+                document.getElementById("battleButton").disabled = false;
+            } else {
+                alert("All characters have been rolled!");
+            }
+        });
+
+        document.getElementById("battleButton").addEventListener("click", () => {
+            if (playerCharacter && enemyCharacter) {
+                const result = battle(playerCharacter, enemyCharacter);
+                document.getElementById("battleResult").innerText = result;
+                
+                // After battle, change the opponent to a new random enemy
+                enemyCharacter = getRandomEnemy();
+                document.getElementById("battleInfo").innerText = 
+                    `You are fighting with: ${playerCharacter.name} from ${playerCharacter.anime} (Power: ${playerCharacter.power}) - You will fight against: ${enemyCharacter.name} from ${enemyCharacter.anime} (Power: ${enemyCharacter.power})`;
+            }
+        });
+
+        function getRandomCharacter() {
+            // Find characters that haven't been rolled yet
+            const availableCharacters = characters.filter(character => !rolledCharacters.includes(character.name));
+            if (availableCharacters.length === 0) return null; // No characters left to roll
+            const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+            return availableCharacters[randomIndex];
+        }
+
+        function getRandomEnemy() {
+            let enemy;
+            do {
+                enemy = characters[Math.floor(Math.random() * characters.length)];
+            } while (battledEnemies.includes(enemy.name)); // Ensure the enemy hasn't been battled yet
+            battledEnemies.push(enemy.name); // Mark the enemy as battled
+            return enemy;
+        }
+
+        function battle(char1, char2) {
+            if (char1.power > char2.power) {
+                return `${char1.name} wins!`;
+            } else if (char2.power > char1.power) {
+                return `${char2.name} wins!`;
+            } else {
+                return "It's a tie!";
+            }
+        }
+
+        function updateInventory() {
+            const inventoryDiv = document.getElementById("inventory");
+            inventoryDiv.innerHTML = 'Inventory: <br>';
+            inventory.forEach((character) => {
+                const characterDiv = document.createElement("div");
+                characterDiv.classList.add("character");
+                characterDiv.innerText = `${character.name} (${character.anime}) - Power: ${character.power}`;
+                characterDiv.addEventListener("click", () => selectForBattle(character));
+                inventoryDiv.appendChild(characterDiv);
+            });
+        }
+
+        function selectForBattle(character) {
+            playerCharacter = character;
+            document.getElementById("battleInfo").innerText = 
+                `You are fighting with: ${playerCharacter.name} from ${playerCharacter.anime} (Power: ${playerCharacter.power})`;
+            
+            // Randomly choose an opponent (enemy)
+            enemyCharacter = getRandomEnemy();
+            document.getElementById("battleInfo").innerText += ` - You will fight against: ${enemyCharacter.name} from ${enemyCharacter.anime}
+            (Power: ${enemyCharacter.power})`;
+        }
+    </script>
+</body>
+</html>
